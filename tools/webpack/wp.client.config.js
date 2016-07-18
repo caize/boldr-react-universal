@@ -45,6 +45,11 @@ function wpConfig({ target, mode }) {
           ifDevClient('react-hot-loader/patch'),
           ifDevClient(`webpack-hot-middleware/client?reload=true&path=http://localhost:${process.env.WP_DS}/__webpack_hmr`),
           path.join(process.cwd(), 'src', 'client.js')
+        ]),
+        vendor: removeEmpty([
+          'react',
+          'react-dom',
+          'react-router'
         ])
       }
     ),
@@ -92,7 +97,12 @@ function wpConfig({ target, mode }) {
           debug: false
         })
       ),
-
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        children: true,
+        minChunks: 2,
+        async: true
+      }),
       ifProd(
         // JS Minification.
         new webpack.optimize.UglifyJsPlugin({

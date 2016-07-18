@@ -7,9 +7,8 @@ import express from 'express';
 import compression from 'compression';
 import hpp from 'hpp';
 import helmet from 'helmet';
+import wpClientConf from '../tools/webpack/wp.client.config.js';
 import boldrSSR from './core/ssr/boldrSSR';
-import clientConfigBuilder from '../tools/webpack/wp.client.config.js';
-
 // Create our express based server.
 const app = express();
 const server = http.createServer(app);
@@ -29,7 +28,7 @@ app.use(helmet.contentSecurityPolicy({
   fontSrc: ["'self'"],
   objectSrc: ["'none'"],
   mediaSrc: ["'none'"],
-  frameSrc: ["'none'"],
+  frameSrc: ["'none'"]
 }));
 app.use(helmet.xssFilter());
 app.use(helmet.frameguard('deny'));
@@ -40,7 +39,7 @@ app.use(helmet.noSniff());
 app.use(compression());
 
 // Configure static serving of our webpack bundled client files.
-const webpackClientConfig = clientConfigBuilder({ mode: process.env.NODE_ENV });
+const webpackClientConfig = wpClientConf({ mode: process.env.NODE_ENV });
 app.use(
   webpackClientConfig.output.publicPath,
   express.static(webpackClientConfig.output.path));
