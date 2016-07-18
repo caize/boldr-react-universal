@@ -1,0 +1,2 @@
+// We don't use the .babelrc. Everything is handled in webpack configs.
+{}
