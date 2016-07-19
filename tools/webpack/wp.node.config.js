@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 
 dotenv.config({ silent: true });
 
-const { ifElse, removeEmpty, merge } = require('../helpers');
+const { ifElse, removeEmpty, merge } = require('../util/helpers');
 
 function getExternals() {
   const nodeModules = fs.readdirSync(path.join(process.cwd(), 'node_modules'))// eslint-disable-line

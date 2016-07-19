@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 
 dotenv.config({ silent: true });
 
-const { ifElse, removeEmpty, merge } = require('../helpers');
+const { ifElse, removeEmpty, merge } = require('../util/helpers');
 
 const ENV_DEV = process.env.NODE_ENV === 'development';
 function wpConfig({ target, mode }) {
