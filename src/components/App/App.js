@@ -8,8 +8,8 @@ function App({ children }) {
   return (
     <div style={{ padding: '10px' }}>
       <div style={{ textAlign: 'center' }}>
-        <h1>React, Universally</h1>
-        <strong>A mildly opinionated ultra low dependency universal react boilerplate.</strong>
+        <h1>Boldr React Universal</h1>
+        <strong>A starter project based off BoldrCMS</strong>
       </div>
       <div>
         <ul>
@@ -19,7 +19,7 @@ function App({ children }) {
 
       </div>
       <div>
-        {children}
+        { children }
       </div>
     </div>
   );

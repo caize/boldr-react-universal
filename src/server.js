@@ -1,40 +1,14 @@
-// This grants us source map support, which is handy as our webpack bundling
-// for the server will include source maps.  Therefore we will have nice stack
-// traces again for our server.
 import 'source-map-support/register';
 import http from 'http';
 import express from 'express';
 import compression from 'compression';
-import hpp from 'hpp';
-import helmet from 'helmet';
-import wpClientConf from '../tools/webpack/wp.client.config.js';
+import wpClientConf from '../tools/webpack/wp.client.config.js'; // eslint-disable-line
 import boldrSSR from './core/ssr/boldrSSR';
 // Create our express based server.
 const app = express();
 const server = http.createServer(app);
 // Don't expose any software information to hackers.
 app.disable('x-powered-by');
-
-// Prevent HTTP Parameter pollution.
-app.use(hpp());
-
-// Content Security Policy
-app.use(helmet.contentSecurityPolicy({
-  defaultSrc: ["'self'"],
-  scriptSrc: ["'self'"],
-  styleSrc: ["'self'"],
-  imgSrc: ["'self'"],
-  connectSrc: ["'self'", 'ws:'],
-  fontSrc: ["'self'"],
-  objectSrc: ["'none'"],
-  mediaSrc: ["'none'"],
-  frameSrc: ["'none'"]
-}));
-app.use(helmet.xssFilter());
-app.use(helmet.frameguard('deny'));
-app.use(helmet.ieNoOpen());
-app.use(helmet.noSniff());
-
 // Response compression.
 app.use(compression());
 

@@ -3,7 +3,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const dotenv = require('dotenv');
 
@@ -11,39 +10,26 @@ dotenv.config({ silent: true });
 
 const { ifElse, removeEmpty, merge } = require('../helpers');
 
+const ENV_DEV = process.env.NODE_ENV === 'development';
 function wpConfig({ target, mode }) {
   const isDev = mode === 'development';
   const isProd = mode === 'production';
-  const isClient = target === 'client';
-  const isServer = target === 'server';
 
   const ifDev = ifElse(isDev);
   const ifProd = ifElse(isProd);
-  const ifServer = ifElse(isServer);
-  const ifDevClient = ifElse(isDev && isClient);
 
   return {
-    target: ifServer('node', 'web'),
+    target: 'web',
     node: {
       __dirname: true,
       __filename: true
     },
-    externals: removeEmpty([
-      ifServer(nodeExternals({
-        binaryDirs: [
-          'normalize.css'
-        ]
-      }))
-    ]),
-    devtool: ifElse(isServer || isDev)(
-      'source-map',
-      'hidden-source-map'
-    ),
+    devtool: ENV_DEV ? 'source-map' : 'hidden-source-map',
     entry: merge(
       {
         main: removeEmpty([
-          ifDevClient('react-hot-loader/patch'),
-          ifDevClient(`webpack-hot-middleware/client?reload=true&path=http://localhost:${process.env.WP_DS}/__webpack_hmr`),
+          ifDev('react-hot-loader/patch'),
+          ifDev(`webpack-hot-middleware/client?reload=true&path=http://localhost:${process.env.WP_DS}/__webpack_hmr`),
           path.join(process.cwd(), 'src', 'client.js')
         ]),
         vendor: removeEmpty([
@@ -83,7 +69,12 @@ function wpConfig({ target, mode }) {
           WEBSITE_DESCRIPTION: JSON.stringify(process.env.WEBSITE_DESCRIPTION)
         }
       }),
-
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        children: true,
+        minChunks: 2,
+        async: true
+      }),
       new AssetsPlugin({
         filename: 'assets.json',
         path: path.join(process.cwd(), 'build', 'client')
@@ -97,12 +88,6 @@ function wpConfig({ target, mode }) {
           debug: false
         })
       ),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        children: true,
-        minChunks: 2,
-        async: true
-      }),
       ifProd(
         // JS Minification.
         new webpack.optimize.UglifyJsPlugin({
@@ -112,11 +97,9 @@ function wpConfig({ target, mode }) {
           }
         })
       ),
-
       ifProd(
         new webpack.optimize.DedupePlugin()
       ),
-
       ifProd(
         new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true })
       )
@@ -139,14 +122,10 @@ function wpConfig({ target, mode }) {
             }
           }
         },
-
-        // JSON
         {
           test: /\.json$/,
           loader: 'json-loader'
         },
-
-        // CSS
         merge(
           { test: /\.css$/ },
           ifProd({

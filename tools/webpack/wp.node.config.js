@@ -1,41 +1,42 @@
 /* eslint-disable no-console */
-
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
 const dotenv = require('dotenv');
 
 dotenv.config({ silent: true });
 
 const { ifElse, removeEmpty, merge } = require('../helpers');
 
-
-function wpConfig({ target, mode }, { json }) {
-  if (!json) {
-    console.log(`==> ℹ️  Creating webpack "${target}" config in "${mode}" mode`);
-  }
+function getExternals() {
+  const nodeModules = fs.readdirSync(path.join(process.cwd(), 'node_modules'))// eslint-disable-line
+  return nodeModules.reduce(function (ext, mod) {// eslint-disable-line
+    ext[mod] = 'commonjs ' + mod// eslint-disable-line
+    return ext// eslint-disable-line
+  }, {})// eslint-disable-line
+}
+function wpConfig({ target, mode }) {
   const isDev = mode === 'development';
   const isProd = mode === 'production';
   const isServer = target === 'server';
 
   const ifDev = ifElse(isDev);
   const ifProd = ifElse(isProd);
-  const ifServer = ifElse(isServer);
 
   return {
-    target: ifServer('node', 'web'),
+    target: 'node',
     node: {
+      console: true,
+      global: true,
+      process: true,
+      Buffer: true,
+      __filaname: true,
       __dirname: true,
-      __filename: true
+      fs: true,
+      path: true
     },
-    externals: removeEmpty([
-      ifServer(nodeExternals({
-        binaryDirs: [
-          'normalize.css'
-        ]
-      }))
-    ]),
+    externals: getExternals(),
     devtool: ifElse(isServer || isDev)(
       'source-map',
       'hidden-source-map'
@@ -50,6 +51,7 @@ function wpConfig({ target, mode }, { json }) {
     output: {
       path: path.join(process.cwd(), 'build', 'server'),
       chunkFilename: '[name]-[chunkhash].js',
+      filename: '[name].js',
       publicPath: ifDev(
         `http://localhost:${process.env.WP_DS}/assets/`,
         '/assets/'
@@ -93,7 +95,7 @@ function wpConfig({ target, mode }, { json }) {
           loader: 'babel-loader',
           exclude: [/node_modules/, path.resolve(process.cwd(), './build')],
           query: {
-            presets: ['react'],
+            presets: ['react', 'es2015-webpack'],
             env: {
               development: {
                 plugins: ['react-hot-loader/babel']
@@ -101,7 +103,6 @@ function wpConfig({ target, mode }, { json }) {
             }
           }
         },
-        // JSON
         {
           test: /\.json$/,
           loader: 'json-loader'
