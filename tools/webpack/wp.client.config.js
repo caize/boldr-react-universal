@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console */ /* eslint-disable no-unneeded-ternary */
 
 const path = require('path');
 const webpack = require('webpack');
@@ -108,6 +108,9 @@ function wpConfig({ target, mode }) {
         new webpack.optimize.DedupePlugin()
       ),
       ifProd(
+        new webpack.optimize.AggressiveMergingPlugin()
+      ),
+      ifProd(
         new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true })
       )
     ]),
@@ -118,13 +121,18 @@ function wpConfig({ target, mode }) {
           loader: 'babel-loader',
           exclude: [/node_modules/, path.resolve(process.cwd(), './build')],
           query: {
+            cacheDirectory: ENV_DEV ? true : false,
             presets: [
               'react',
               'es2015-webpack'
             ],
             env: {
               development: {
+                presets: ['react-hmre'],
                 plugins: ['react-hot-loader/babel']
+              },
+              production: {
+                presets: ['react-optimize']
               }
             },
             compact: 'auto'
