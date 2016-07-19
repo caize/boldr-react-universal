@@ -56,7 +56,8 @@ function wpConfig({ target, mode }) {
         '.js',
         '.jsx',
         '.json'
-      ]
+      ],
+      mainFields: ['jsnext:main', 'main']
     },
     postcss(webpack) {
       return [
@@ -125,8 +126,13 @@ function wpConfig({ target, mode }) {
               development: {
                 plugins: ['react-hot-loader/babel']
               }
-            }
+            },
+            compact: 'auto'
           }
+        },
+        {
+          test: /\.(eot|woff|woff2|ttf|otf|svg|png|jpg|jpeg|gif|webp|mp4|mp3|ogg|pdf)$/,
+          loader: 'file-loader'
         },
         {
           test: /\.json$/,
@@ -137,11 +143,28 @@ function wpConfig({ target, mode }) {
           ifProd({
             loader: ExtractTextPlugin.extract({
               notExtractLoader: 'style-loader',
-              loader: 'css-loader!postcss'
+              loader: 'css-loader?modules&sourceMap&minimize=false&localIdentName=[local]-[hash:base62:6]!postcss-loader'
             })
           }),
           ifDev({
-            loader: 'style-loader?sourceMap!css-loader?sourceMap!postcss-loader'
+            loaders: [
+              {
+                loader: 'style-loader'
+              },
+              {
+                loader: 'css-loader',
+                query:
+                {
+                  sourceMap: true,
+                  modules: true,
+                  localIdentName: '[local]-[hash:base62:6]',
+                  minimize: false
+                }
+              },
+              {
+                loader: 'postcss-loader'
+              }
+            ]
           })
         )
       ]

@@ -63,7 +63,8 @@ function wpConfig({ target, mode }) {
         '.js',
         '.jsx',
         '.json'
-      ]
+      ],
+      mainFields: ['jsnext:main', 'main']
     },
     plugins: removeEmpty([
       new webpack.DefinePlugin({
@@ -100,7 +101,8 @@ function wpConfig({ target, mode }) {
               development: {
                 plugins: ['react-hot-loader/babel']
               }
-            }
+            },
+            compact: 'auto'
           }
         },
         {
@@ -110,8 +112,39 @@ function wpConfig({ target, mode }) {
         {
           test: /\.css$/,
           loaders: [
-            'fake-style-loader',
-            'css-loader'
+            {
+              loader: 'fake-style-loader'
+            },
+            {
+              loader: 'css-loader',
+              query:
+              {
+                sourceMap: true,
+                modules: true,
+                localIdentName: '[local]-[hash:base62:6]',
+                minimize: false
+              }
+            },
+            {
+              loader: 'postcss-loader'
+            }
+          ]
+        },
+        {
+          test: /\.scss$/,
+          loaders: [
+            {
+              loader: 'fake-style-loader'
+            },
+            {
+              loader: 'css-loader'
+            },
+            {
+              loader: 'postcss-loader'
+            },
+            {
+              loader: 'sass-loader'
+            }
           ]
         }
       ]
