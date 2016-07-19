@@ -2,7 +2,7 @@ import React from 'react';
 import { RouterContext, createMemoryHistory, match } from 'react-router/es6';
 import render from './render';
 
-import routes from '../../config/routes'; // eslint-disable-line
+import routes from '../../../config/routes'; // eslint-disable-line
 
 function boldrSSR(request, response) {
   if (process.env.DISABLE_SSR) {

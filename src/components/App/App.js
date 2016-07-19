@@ -9,7 +9,7 @@ function App({ children }) {
     <div>
       <div style={{ textAlign: 'center' }}>
         <h1>Boldr React Universal</h1>
-        <strong>A starter project based off BoldrCMS</strong>
+        <strong>A server rendering React starter project based off BoldrCMS</strong>
       </div>
       <div>
         <ul>

@@ -1,6 +1,6 @@
 import { renderToString } from 'react-dom/server';
 import createTemplate from './createTemplate';
-import ClientBundleAssets from '../../../build/client/assets.json';
+import ClientBundleAssets from '../../../../build/client/assets.json';
 
 const chunks = Object.keys(ClientBundleAssets).map(key => ClientBundleAssets[key]);
 const assets = chunks.reduce((acc, chunk) => {

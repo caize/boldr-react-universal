@@ -7,10 +7,41 @@
     "node": "~6.3.0"
   },
   "scripts": {
+    "build": "better-npm-run build",
+    "build:client": "better-npm-run build:client",
+    "build:server": "better-npm-run build:server",
     "clean": "rimraf build",
-    "development": "node ./tools/scripts/server.js",
-    "build": "npm run clean && webpack --env.mode production --config webpack.client.config.js && webpack --env.mode production --config webpack.server.config.js",
+    "clean:server": "rimraf build/server",
+    "clean:client": "rimraf build/client",
+    "dev": "better-npm-run dev",
+    "postinstall": "better-npm-run build",
     "start": "node build/server/main.js"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "better-npm-run build:server && better-npm-run build:client",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "build:server": {
+      "command": "npm run clean:server && ./node_modules/.bin/webpack --env.mode production --config webpack.server.config.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "build:client": {
+      "command": "npm run clean:client && ./node_modules/.bin/webpack --env.mode production --config webpack.client.config.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "dev": {
+      "command": "node ./tools/scripts/server.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
   },
   "repository": {
     "type": "git",
@@ -31,6 +62,7 @@
   },
   "homepage": "https://github.com/strues/boldr-react-universal#readme",
   "dependencies": {
+    "better-npm-run": "0.0.9",
     "compression": "1.6.2",
     "express": "4.14.0",
     "react": "15.2.1",

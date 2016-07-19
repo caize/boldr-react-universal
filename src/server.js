@@ -3,7 +3,7 @@ import http from 'http';
 import express from 'express';
 import compression from 'compression';
 import wpClientConf from '../tools/webpack/wp.client.config.js'; // eslint-disable-line
-import boldrSSR from './core/ssr/boldrSSR';
+import boldrSSR from './server/core/ssr/boldrSSR';
 
 // Create our express based server.
 const app = express();
