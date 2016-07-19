@@ -1,8 +1,8 @@
 const express = require('express');
 const createWebpackMiddleware = require('webpack-dev-middleware');
 const createWebpackHotMiddleware = require('webpack-hot-middleware');
-const ListenerManager = require('../util/listenerManager');
-const helper = require('../util/helpers');
+const ListenerManager = require('../../util/listenerManager');
+const helper = require('../../util/helpers');
 
 class HotClient {
   constructor(compiler) {

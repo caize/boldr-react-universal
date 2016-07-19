@@ -2,7 +2,7 @@ const path = require('path');
 const process = require('process');
 const chokidar = require('chokidar');
 const webpack = require('webpack');
-const helper = require('../util/helpers');
+const helper = require('../../util/helpers');
 const HotServer = require('./HotServer');
 const HotClient = require('./HotClient');
 

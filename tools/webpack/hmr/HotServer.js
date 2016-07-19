@@ -1,7 +1,7 @@
 const path = require('path');
 
-const ListenerManager = require('../util/listenerManager');
-const helper = require('../util/helpers');
+const ListenerManager = require('../../util/listenerManager');
+const helper = require('../../util/helpers');
 
 class HotServer {
   constructor(compiler) {
