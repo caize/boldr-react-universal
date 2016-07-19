@@ -6,7 +6,7 @@ import Link from 'react-router/lib/Link';
 
 function App({ children }) {
   return (
-    <div style={{ padding: '10px' }}>
+    <div>
       <div style={{ textAlign: 'center' }}>
         <h1>Boldr React Universal</h1>
         <strong>A starter project based off BoldrCMS</strong>
@@ -25,7 +25,7 @@ function App({ children }) {
   );
 }
 App.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node
 };
 
 export default App;

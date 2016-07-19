@@ -1,6 +1,5 @@
 import serialize from 'serialize-javascript';
 
-// :: [String] -> [String]
 function cssImports(css) {
   return css
     .map(cssPath =>
@@ -9,7 +8,6 @@ function cssImports(css) {
     .join('\n');
 }
 
-// :: [String] -> [String]
 function javascriptImports(javascript) {
   return javascript
     .map(scriptPath =>
@@ -18,14 +16,12 @@ function javascriptImports(javascript) {
     .join('\n');
 }
 
-// :: Object -> [String]
 function metaTags(meta) {
   return Object.keys(meta).map(metaKey =>
     `<meta name="${metaKey}" content="${meta[metaKey]}" />`
   );
 }
 
-// :: Assets -> Content -> String
 function createTemplate(assets = {}) {
   const { css = [], javascript = [] } = assets;
 

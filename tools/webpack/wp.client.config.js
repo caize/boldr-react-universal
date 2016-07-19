@@ -24,7 +24,7 @@ function wpConfig({ target, mode }) {
       __dirname: true,
       __filename: true
     },
-    devtool: ENV_DEV ? 'source-map' : 'hidden-source-map',
+    devtool: ENV_DEV ? 'cheap-module-eval-source-map' : 'hidden-source-map',
     entry: merge(
       {
         main: removeEmpty([
@@ -57,6 +57,12 @@ function wpConfig({ target, mode }) {
         '.jsx',
         '.json'
       ]
+    },
+    postcss(webpack) {
+      return [
+        require('postcss-import')({ addDependencyTo: webpack }),
+        require('postcss-url')()
+      ];
     },
     plugins: removeEmpty([
       new webpack.DefinePlugin({
@@ -131,14 +137,11 @@ function wpConfig({ target, mode }) {
           ifProd({
             loader: ExtractTextPlugin.extract({
               notExtractLoader: 'style-loader',
-              loader: 'css-loader'
+              loader: 'css-loader!postcss'
             })
           }),
           ifDev({
-            loaders: [
-              'style-loader',
-              { loader: 'css-loader', query: { sourceMap: true } }
-            ]
+            loader: 'style-loader?sourceMap!css-loader?sourceMap!postcss-loader'
           })
         )
       ]
