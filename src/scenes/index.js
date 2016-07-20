@@ -1,4 +1,3 @@
-
 export default (store) => {
   if (typeof require.ensure !== 'function') require.ensure = (deps, cb) => cb(require);
 

@@ -3,13 +3,13 @@ import Debug from 'debug';
 import app from './server';
 
 const debug = Debug('boldr:server');
-// Create an http server and listener
-const server = http.createServer(app);
-// Create socket listener
-const port = normalizePort(3000);
-debug('listening');
+const port = normalizePort(process.env.PORT);
 
-server.listen(3000);
+// Create an http server
+const server = http.createServer(app);
+
+debug('listening');
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 

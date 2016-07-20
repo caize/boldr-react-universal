@@ -15,6 +15,7 @@ function getExternals() {
     return ext // eslint-disable-line
   }, {}) // eslint-disable-line
 }
+const ROOT_DIR = path.resolve(__dirname, '../../');
 const webpackConfig = module.exports = {
   target: 'node',
   node: {
@@ -28,17 +29,18 @@ const webpackConfig = module.exports = {
     path: true
   },
   externals: getExternals(),
+  context: path.resolve(__dirname, '../../'),
   devtool: 'source-map',
   entry: {
-      server: [
-        path.join(process.cwd(), 'src', 'server', 'index.js')
-      ]
-    },
+    server: [
+      path.join(process.cwd(), 'src', 'server', 'index.js')
+    ]
+  },
   output: {
-    path: path.join(process.cwd(), 'dist', 'assets'),
+    path: path.resolve(path.join(ROOT_DIR, 'dist')),
+    publicPath: '/',
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
-    // publicPath: `http://localhost:${process.env.WP_DS}/assets/`,
     libraryTarget: 'commonjs2'
   },
   resolve: {
@@ -52,14 +54,12 @@ const webpackConfig = module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        PORT: JSON.stringify(process.env.PORT),
-        WP_DS: JSON.stringify(process.env.WP_DS),
-        WEBSITE_TITLE: JSON.stringify(process.env.WEBSITE_TITLE),
-        WEBSITE_DESCRIPTION: JSON.stringify(process.env.WEBSITE_DESCRIPTION)
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       },
-      '__DISABLE_SSR__': process.env.DISABLE_SSR,
-      '__DEV__': process.env.NODE_ENV === 'development'
+      __DEV__: process.env.NODE_ENV !== 'production',
+      __DISABLE_SSR__: false,
+      __CLIENT__: false,
+      __SERVER__: true
     }),
     //
     // new AssetsPlugin({
@@ -78,7 +78,7 @@ const webpackConfig = module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: [/node_modules/, path.resolve(process.cwd(), './dist')],
+        exclude: [/node_modules/],
         query: {
           presets: ['react', 'es2015-webpack', 'stage-0'],
           compact: 'auto'

@@ -4,18 +4,19 @@
   "description": "Universal React starter based on Boldr",
   "main": "build/server/main.js",
   "engines": {
-    "node": "~6.3.0"
+    "node": "~6.3.0",
+    "npm": "~3.0.0"
   },
   "scripts": {
     "build": "better-npm-run build",
     "build:client": "better-npm-run build:client",
     "build:server": "better-npm-run build:server",
-    "clean": "rimraf dist/assets",
+    "clean": "rimraf static/assets",
     "clean:server": "rimraf build/server",
     "clean:client": "rimraf build/client",
     "dev": "better-npm-run dev",
     "postinstall": "better-npm-run build",
-    "start": "NODE_ENV=production node dist/assets/server.js",
+    "start": "better-npm-run start",
     "watch:client": "better-npm-run watch:client"
   },
   "betterScripts": {
@@ -45,6 +46,13 @@
         "NODE_PATH": "./src"
       }
     },
+    "start": {
+      "command": "NODE_ENV=production node tools/scripts/prod.js",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3000
+      }
+    },
     "watch:client": {
       "command": "node tools/webpack/wp.dev.server.js",
       "env": {
@@ -60,7 +68,10 @@
     "url": "git+https://github.com/strues/boldr-react-universal.git"
   },
   "keywords": [
+    "webpack",
     "react",
+    "redux",
+    "isomorphic",
     "boilerplate",
     "universal",
     "javascript",

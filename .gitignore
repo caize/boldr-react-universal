@@ -4,9 +4,8 @@
 # Build output folders
 build/
 public/
-
-# Webpack build output of the js client
-backend/assets/client/
+.happypack/
+dist/
 
 # Isomorphic webpack output
 webpack-assets.json
@@ -15,7 +14,7 @@ webpack-stats.json
 # Logs
 logs
 *.log
-
+docs/logs
 # Runtime data
 pids
 *.pid

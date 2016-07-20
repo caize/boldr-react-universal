@@ -2,8 +2,8 @@ const path = require('path');
 
 const config = {
   ROOT_DIR: path.resolve(__dirname, '..'),
-  DIST_DIR: 'dist',
-  ASSETS_DIR: path.resolve(__dirname, '../dist/assets'),
+  DIST_DIR: 'build',
+  ASSETS_DIR: path.resolve(process.cwd(), 'build'),
   SERVER_PORT: process.env.SERVER_PORT || 3000,
   WP_HOST: 'localhost',
   WP_DS: process.env.WP_DS || 3001,

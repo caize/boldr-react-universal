@@ -119,8 +119,10 @@ const webpackConfig = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         PORT: JSON.stringify(SERVER_PORT)
       },
-      '__DEV__': process.env.NODE_ENV === 'development',
-      '__DISABLE_SSR__': disableSSR
+      __DEV__: process.env.NODE_ENV !== 'production',
+      __DISABLE_SSR__: false,
+      __CLIENT__: true,
+      __SERVER__: false
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',

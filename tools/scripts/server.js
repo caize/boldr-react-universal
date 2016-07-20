@@ -22,7 +22,7 @@ if (!require('piping')({
 // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic.config'))
-  .development(process.env.NODE_ENV === 'development')
+  .development(__DEV__)
   .server(rootDir, function() {
     require('../../src/server');
   });

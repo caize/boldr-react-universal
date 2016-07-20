@@ -1,10 +1,11 @@
-import './globals.css';
-
 import React, { PropTypes } from 'react';
+import Logo from 'components/atm.Logo';
+import '../../styles/globals.css';
 
 const CoreLayout = ({ children }) => {
   return (
-    <div style={ { padding: '10px' } }>
+    <div>
+      <Logo height={ 250 } width={ 250 } />
         { children }
     </div>
   );

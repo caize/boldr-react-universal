@@ -1,6 +1,7 @@
+import path from 'path';
 import _debug from 'debug';
 import Express from 'express';
-
+// React Deps
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import match from 'react-router/lib/match';
@@ -9,22 +10,23 @@ import RouterContext from 'react-router/lib/RouterContext';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { trigger } from 'redial';
+
 import ApiClient from '../core/api/ApiClient';
 import configureStore from '../core/redux/configureStore';
-
 import Html from '../components/tpl.Html';
-
 import getRoutes from '../scenes/index';
 
 const debug = _debug('boldr:server');
 // Create our express server.
-const app = new Express();
+const app = Express();
+const publicPath = path.resolve('static');
+
+app.use(Express.static(publicPath));
 
 app.use((req, res) => {
   if (__DEV__) {
     webpackIsomorphicTools.refresh();
   }
-
   const client = new ApiClient(req);
   const memoryHistory = createHistory(req.originalUrl);
   const location = memoryHistory.createLocation(req.originalUrl);
@@ -65,7 +67,6 @@ app.use((req, res) => {
 
       trigger('fetch', components, locals).then(() => {
         global.navigator = { userAgent: req.headers['user-agent'] };
-
 
         const component = (
           <Provider store={ store } key="provider">

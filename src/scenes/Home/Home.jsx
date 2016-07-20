@@ -1,12 +1,14 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 
 function Home() {
   return (
-    <article>
+    <div>
+    <Helmet title="Home" />
       <p>
         Congrats you're live!
       </p>
-    </article>
+    </div>
   );
 }
 
