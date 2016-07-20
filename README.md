@@ -3,10 +3,9 @@
 A **bold** React starter project for your next great universal application.
 
 ## Features
-- Lightweight / easy on dependencies
 - A pleasant developer experience conductive to getting things done
-- Webpack 2
-- Hot module replacement
+- [Webpack v2](https://github.com/webpack/webpack): With code splitting on routes
+- [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Hot module replacement
 
 ## Demo
 
@@ -15,12 +14,13 @@ A **bold** React starter project for your next great universal application.
 ### Development
 Getting up and running for development is easy.  
 
-```bash
-git clone git@github.com:strues/boldr-react-universal.git  
-cd boldr-react-universal  
-```
+`git clone git@github.com:strues/boldr-react-universal.git`
 
-Install the dependencies `npm install` and `cp example.env .env`.  
+`cd boldr-react-universal`  
+
+Set the env file `cp example.env .env`
+
+Install the dependencies `npm install`  
 
 Start the development process with `npm run dev`
 
@@ -28,11 +28,11 @@ Start the development process with `npm run dev`
 Running the two commands below will compile your application and serve the production ready build.
 
 ```bash
-  $ npm run build  
-  $ npm start
+npm run build  
+npm start
 ```
 
-Your application will start running on port 3000. This is configurable from the package.json. Modify the betterScripts start command's port.
+Your application will start running on port 3000. The server file and source map are outputted into the root of the directory. The client side application is placed in `public/assets`. Express is set to serve public as its static directory.
 
 
 ## Notes
@@ -50,3 +50,26 @@ Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring u
 
 
 ## Contributing
+
+
+## Dependencies
+- [better-npm-run](https://github.com/benoror/better-npm-run): Better NPM scripts runner
+- [body-parser](https://github.com/expressjs/body-parser): Node.js body parsing middleware
+- [compression](https://github.com/expressjs/compression): Node.js compression middleware
+- [debug](https://github.com/visionmedia/debug): small debugging utility
+- [express](https://github.com/expressjs/express): Fast, unopinionated, minimalist web framework
+- [lodash](https://github.com/lodash/lodash): Lodash modular utilities.
+- [react](https://github.com/facebook/react): React is a JavaScript library for building user interfaces.
+- [react-dom](https://github.com/facebook/react): React package for working with the DOM.
+- [react-helmet](https://github.com/nfl/react-helmet): A document head manager for React
+- [react-redux](https://github.com/reactjs/react-redux): Official React bindings for Redux
+- [react-router](https://github.com/reactjs/react-router): A complete routing library for React
+- [react-router-redux](https://github.com/reactjs/react-router-redux): Ruthlessly simple bindings to keep react-router and redux in sync
+- [redial](https://github.com/markdalgleish/redial): Universal data fetching and route lifecycle management for React etc.
+- [redux](https://github.com/reactjs/redux): Predictable state container for JavaScript apps
+- [redux-logger](https://github.com/fcomb/redux-logger): Logger for redux
+- [redux-thunk](https://github.com/gaearon/redux-thunk): Thunk middleware for Redux.
+- [serialize-javascript](https://github.com/yahoo/serialize-javascript): Serialize JavaScript to a superset of JSON that includes regular expressions and functions.
+- [source-map-support](https://github.com/evanw/node-source-map-support): Fixes stack traces for files with source maps
+- [superagent](https://github.com/visionmedia/superagent): elegant &amp; feature rich browser / node HTTP with a fluent API
+- [webpack-isomorphic-tools](https://github.com/halt-hammerzeit/webpack-isomorphic-tools): Transforms CSS-alike text into a React style JSON object

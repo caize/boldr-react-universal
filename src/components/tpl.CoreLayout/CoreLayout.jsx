@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react';
-import Logo from '../atm.Logo';
 import '../../styles/globals.css';
 
 const CoreLayout = ({ children }) => {
   return (
-    <div>
-      <Logo height={ 250 } width={ 250 } />
+    <div className="container-fluid">
         { children }
     </div>
   );

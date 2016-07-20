@@ -1,4 +1,5 @@
 import CoreLayout from './tpl.CoreLayout';
-import Html from './tpl.tpl.Html';
+import Html from './tpl.Html';
+import Logo from './atm.Logo';
 
-export { CoreLayout, Html };
+export { CoreLayout, Html, Logo };

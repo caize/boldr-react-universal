@@ -9,7 +9,7 @@ const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic.config'))
     .development(devMode)
     .server(rootDir, () => {
-      require('../../dist/server');
+      require('../../server');
     });
 
 global.__CLIENT__ = false;

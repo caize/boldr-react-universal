@@ -3,13 +3,13 @@ import Debug from 'debug';
 import app from './server';
 
 const debug = Debug('boldr:server');
-const port = normalizePort(process.env.PORT);
+const port = normalizePort(process.env.SERVER_PORT || 3000);
 
 // Create an http server
 const server = http.createServer(app);
 
 server.listen(port);
-console.log(`🎯   ===> Application running in ${process.env.NODE_ENV} on ${process.env.PORT}`);
+console.log(`🎯   ===> Application running in ${process.env.NODE_ENV} on ${port}`);
 server.on('error', onError);
 server.on('listening', onListening);
 

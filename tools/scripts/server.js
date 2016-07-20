@@ -12,13 +12,6 @@ global.__SERVER__ = true;
 global.__DISABLE_SSR__ = false;  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
 global.__DEV__ = process.env.NODE_ENV !== 'production';
 
-if (!require('piping')({
-  hook: true,
-  ignore: /(\/\.|~$|\.json|\.scss$)/i
-})) {
-  return;
-}
-
 // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic.config'))

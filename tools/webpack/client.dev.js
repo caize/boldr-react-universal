@@ -6,7 +6,8 @@ import webpack from 'webpack';
 import dotenv from 'dotenv';
 import WebpackIsomorphicToolsPlugin from 'webpack-isomorphic-tools/plugin';
 
-import config from '../config';
+import { ROOT_DIR, SRC_DIR, WP_DS, NODE_MODULES_DIR, VENDOR_PREFIXES, VENDOR, BUILD_DIR } from '../constants';
+
 import isomorphicConfig from './isomorphic.config';
 
 const debug = Debug('boldr:webpack:client');
@@ -16,11 +17,6 @@ dotenv.config({ silent: true });
 const webpackIsomorphicToolsPlugin =
   new WebpackIsomorphicToolsPlugin(isomorphicConfig);
 
-const { ROOT_DIR, WP_HOST, WP_DS, disableSSR, SERVER_PORT, DIST_DIR,
-ASSETS_DIR } = config;
-
-const LOCAL_DEV = process.env.NODE_ENV === 'development';
-
 const BABELQUERY = {
   babelrc: false,
   cacheDirectory: true,
@@ -28,44 +24,47 @@ const BABELQUERY = {
   // When set to "auto" compact is set to true on input sizes of >100KB.
   compact: 'auto',
   presets: ['react-hmre', 'react', 'es2015-webpack', 'stage-0'],
-  plugins: ['react-hot-loader/babel', 'transform-decorators-legacy']
+  plugins: [['transform-runtime', { polyfill: true, regenerator: false }],
+            'react-hot-loader/babel', 'transform-decorators-legacy']
 };
 
-const HMR = `webpack-hot-middleware/client?reload=true&path=http://${WP_HOST}:${WP_DS}/__webpack_hmr`;
+const HMR = `webpack-hot-middleware/client?reload=true&path=http://localhost:${WP_DS}/__webpack_hmr`;
 debug('Webpack is reading the client configuration.');
-const webpackConfig = {
+const clientDevConfig = {
   target: 'web',
   node: {
     __dirname: true,
     __filename: true
   },
+  // use either cheap-eval-source-map or cheap-module-eval-source-map.
+  // cheap eval is faster than cheap-module
+  // see https://webpack.github.io/docs/build-performance.html#sourcemaps
   devtool: 'cheap-module-eval-source-map',
   context: ROOT_DIR,
   entry: {
     main: [
       'react-hot-loader/patch',
       HMR,
-      path.resolve('src', 'client.js')
+      path.join(SRC_DIR, 'client.js')
     ],
-    vendor: config.VENDOR
+    vendor: VENDOR
   },
   output: {
-    path: ASSETS_DIR,
+    path: BUILD_DIR,
     filename: '[name].js',
     chunkFilename: '[name]-chunk.js',
-    publicPath: `http://localhost:3001/${DIST_DIR}/`
+    publicPath: `http://localhost:${WP_DS}/build/`
 
   },
   resolve: {
-    extensions: [
-      '.js',
-      '.jsx',
-      '.json'
-    ],
+    extensions: ['.js', '.jsx', '.json'],
+    root: ROOT_DIR,
+    modulesDirectories: ['src', 'node_modules'],
     alias: {
-      components: path.resolve(ROOT_DIR, 'src/components'),
-      scenes: path.resolve(ROOT_DIR, 'src/scenes'),
-      core: path.resolve(ROOT_DIR, 'src/core')
+      react$: require.resolve(path.join(NODE_MODULES_DIR, 'react')),
+      components: path.join(SRC_DIR, 'components'),
+      scenes: path.join(SRC_DIR, 'scenes'),
+      core: path.join(SRC_DIR, 'core')
     }
   },
   module: {
@@ -73,51 +72,33 @@ const webpackConfig = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: NODE_MODULES_DIR,
         query: BABELQUERY
       },
-      {
-        test: /\.(eot|woff|woff2|ttf|otf|svg|png|jpg|jpeg|gif|webp|mp4|mp3|ogg|pdf)$/,
-        loader: 'file-loader'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },
+      { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
+      { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
+      { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
-        loaders: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            query:
-            {
-              sourceMap: true,
-              modules: true,
-              localIdentName: '[local]-[hash:base62:6]',
-              minimize: false
-            }
-          },
-          {
-            loader: 'postcss-loader'
-          }
-        ]
+        loader: 'style!css?modules&camelCase&sourceMap&localIdentName=[name]---[local]---[hash:base64:5]!postcss'
       }
     ]
   },
   postcss(webpack) {
     return [
       require('postcss-import')({ addDependencyTo: webpack }),
-      require('postcss-url')()
+      require('postcss-url')(),
+      require('autoprefixer')({ browsers: VENDOR_PREFIXES })
     ];
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        PORT: JSON.stringify(SERVER_PORT)
+        SERVER_PORT: parseInt(process.env.SERVER_PORT, 10)
       },
       __DEV__: process.env.NODE_ENV !== 'production',
       __DISABLE_SSR__: false,
@@ -136,4 +117,4 @@ const webpackConfig = {
   ]
 };
 
-module.exports = webpackConfig;
+module.exports = clientDevConfig;

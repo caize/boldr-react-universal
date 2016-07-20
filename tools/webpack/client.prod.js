@@ -4,8 +4,10 @@ import webpack from 'webpack';
 import dotenv from 'dotenv';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import WebpackIsomorphicToolsPlugin from 'webpack-isomorphic-tools/plugin';
+import {
+  ROOT_DIR, SRC_DIR, NODE_MODULES_DIR, VENDOR_PREFIXES, VENDOR, ASSETS_DIR
+} from '../constants';
 
-import config from '../config';
 import isomorphicConfig from './isomorphic.config';
 
 const debug = Debug('boldr:webpack:clientProd');
@@ -15,21 +17,22 @@ dotenv.config({ silent: true });
 const webpackIsomorphicToolsPlugin =
   new WebpackIsomorphicToolsPlugin(isomorphicConfig);
 
-const { ROOT_DIR, WP_HOST, WP_DS, disableSSR, SERVER_PORT, DIST_DIR } = config;
-const ASSETS_PATH = path.resolve(ROOT_DIR, './static/assets');
-const webpackConfig = module.exports = {
+// const { ROOT_DIR, WP_HOST, WP_DS, disableSSR, SERVER_PORT, DIST_DIR } = config;
+// const ASSETS_PATH = path.resolve(ROOT_DIR, './static/assets');
+const clientProdConfig = {
   target: 'web',
   node: {
     __dirname: true,
     __filename: true
   },
   devtool: 'hidden-source-map',
+  context: ROOT_DIR,
   entry: {
-    main: path.join(process.cwd(), 'src', 'client.js'),
-    vendor: config.VENDOR
+    main: path.join(SRC_DIR, 'client.js'),
+    vendor: VENDOR
   },
   output: {
-    path: ASSETS_PATH,
+    path: ASSETS_DIR,
     filename: '[name]-[hash].js',
     chunkFilename: '[name]-[chunkhash].js',
     publicPath: '/assets/'
@@ -39,27 +42,27 @@ const webpackConfig = module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: [/node_modules/, path.resolve(process.cwd(), './dist')],
+        exclude: [NODE_MODULES_DIR],
         query: {
           cacheDirectory: false,
+          compact: 'auto',
+          babelrc: false,
           presets: [
-            'react',
             'es2015-webpack',
+            'react',
             'stage-0',
             'react-optimize'
           ],
-          plugins: ['transform-decorators-legacy'],
-          compact: 'auto'
+          plugins: [['transform-runtime', { polyfill: true, regenerator: false }],
+            'transform-decorators-legacy']
         }
       },
-      {
-        test: /\.(eot|woff|woff2|ttf|otf|svg|png|jpg|jpeg|gif|webp|mp4|mp3|ogg|pdf)$/,
-        loader: 'file-loader'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },
+      { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
+      { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
+      { test: /\.json$/, loader: 'json-loader' },
       { test: /\.css$/,
         loader: ExtractTextPlugin.extract({
           notExtractLoader: 'style-loader',
@@ -69,31 +72,29 @@ const webpackConfig = module.exports = {
     ]
   },
   resolve: {
-    extensions: [
-      '.js',
-      '.jsx',
-      '.json'
-    ],
-
+    extensions: ['.js', '.jsx', '.json'],
+    root: ROOT_DIR,
+    modulesDirectories: ['src', 'node_modules'],
     alias: {
-      components: path.resolve(ROOT_DIR, './src/components'),
-      src: path.join(ROOT_DIR, './src'),
-      state: path.resolve(ROOT_DIR, './src/state'),
-      scenes: path.resolve(ROOT_DIR, './src/scenes'),
-      core: path.resolve(ROOT_DIR, './src/core')
+      react$: require.resolve(path.join(NODE_MODULES_DIR, 'react'))
     }
   },
   postcss(webpack) {
     return [
-      require('postcss-import')({ addDependencyTo: webpack }),
-      require('postcss-url')()
+      require('postcss-import')(),
+      require('postcss-url')(),
+      require('autoprefixer')({ browsers: VENDOR_PREFIXES })
     ];
   },
   plugins: [
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        PORT: JSON.stringify(SERVER_PORT)
+        NODE_ENV: JSON.stringify('production'),
+        SERVER_PORT: parseInt(process.env.SERVER_PORT, 10)
       },
       __DEV__: process.env.NODE_ENV !== 'production',
       __DISABLE_SSR__: false,
@@ -106,19 +107,23 @@ const webpackConfig = module.exports = {
       minChunks: 2,
       async: true
     }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false
+    new webpack.ProvidePlugin({
+      // make fetch available
+      fetch: 'exports?self.fetch!whatwg-fetch'
     }),
+    // needed for long-term caching
+    new webpack.optimize.OccurrenceOrderPlugin(true),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         screw_ie8: true,
         warnings: false
       }
     }),
+    // merge common
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true }),
     webpackIsomorphicToolsPlugin
   ]
 };
+module.exports = clientProdConfig;

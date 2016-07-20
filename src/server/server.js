@@ -19,7 +19,7 @@ import getRoutes from '../scenes/index';
 const debug = _debug('boldr:server');
 // Create our express server.
 const app = Express();
-const publicPath = path.resolve('static');
+const publicPath = path.resolve('public');
 
 app.use(Express.static(publicPath));
 
@@ -75,7 +75,7 @@ app.use((req, res) => {
         );
         res.status(200);
 
-        res.send('<!doctype html>\n' +
+        res.send('<!doctype html>\n' + // eslint-disable-line
           ReactDOM.renderToString(
             <Html assets={ webpackIsomorphicTools.assets() } component={ component } store={ store } />
           ));
