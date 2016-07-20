@@ -8,8 +8,8 @@ const port = normalizePort(process.env.PORT);
 // Create an http server
 const server = http.createServer(app);
 
-debug('listening');
 server.listen(port);
+console.log(`🎯   ===> Application running in ${process.env.NODE_ENV} on ${process.env.PORT}`);
 server.on('error', onError);
 server.on('listening', onListening);
 

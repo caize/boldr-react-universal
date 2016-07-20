@@ -2,9 +2,9 @@ const path = require('path');
 
 const config = {
   ROOT_DIR: path.resolve(__dirname, '..'),
+  SERVER_PORT: process.env.SERVER_PORT || 3000,
   DIST_DIR: 'build',
   ASSETS_DIR: path.resolve(process.cwd(), 'build'),
-  SERVER_PORT: process.env.SERVER_PORT || 3000,
   WP_HOST: 'localhost',
   WP_DS: process.env.WP_DS || 3001,
   disableSSR: process.env.DISABLE_SSR || false,
@@ -18,7 +18,8 @@ const config = {
     'react-router-redux',
     'react-helmet',
     'redux-thunk',
-    'redial'
+    'redial',
+    'superagent'
   ]
 
 };
