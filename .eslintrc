@@ -10,6 +10,10 @@
     "defaultParams": true
   },
   "rules": {
-
+    "babel/arrow-parens": 0
+  },
+  "globals": {
+    "__DEV__": false,
+    "__DISABLE_SSR__": false
   }
 }

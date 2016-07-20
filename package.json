@@ -15,7 +15,8 @@
     "clean:client": "rimraf build/client",
     "dev": "better-npm-run dev",
     "postinstall": "better-npm-run build",
-    "start": "node build/server/main.js"
+    "start": "node build/server/main.js",
+    "watch:client": "better-npm-run watch:client"
   },
   "betterScripts": {
     "build": {
@@ -25,21 +26,32 @@
       }
     },
     "build:server": {
-      "command": "npm run clean:server && ./node_modules/.bin/webpack --env.mode production --config webpack.server.config.js",
+      "command": "npm run clean:server && ./node_modules/.bin/webpack --env production --config tools/webpack/wp.node.config.js",
       "env": {
         "NODE_ENV": "production"
       }
     },
     "build:client": {
-      "command": "npm run clean:client && ./node_modules/.bin/webpack --env.mode production --config webpack.client.config.js",
+      "command": "npm run clean:client && ./node_modules/.bin/webpack --env production --config tools/webpack/wp.client.prod.js",
       "env": {
         "NODE_ENV": "production"
       }
     },
     "dev": {
-      "command": "node ./tools/scripts/server.js",
+      "command": "npm run clean && concurrently --kill-others \"better-npm-run watch:client\"  \"node tools/scripts/server.js\"",
       "env": {
-        "NODE_ENV": "development"
+        "ENABLE_PIPING": "true",
+        "NODE_ENV": "development",
+        "NODE_PATH": "./src"
+      }
+    },
+    "watch:client": {
+      "command": "node tools/webpack/wp.dev.server.js",
+      "env": {
+        "NODE_ENV": "development",
+        "NODE_PATH": "./src",
+        "PORT": 3000,
+        "WP_DS": 3001
       }
     }
   },
@@ -63,48 +75,58 @@
   "homepage": "https://github.com/strues/boldr-react-universal#readme",
   "dependencies": {
     "better-npm-run": "0.0.9",
+    "body-parser": "^1.15.2",
     "compression": "1.6.2",
+    "debug": "^2.2.0",
     "express": "4.14.0",
+    "lodash": "^4.13.1",
     "react": "15.2.1",
     "react-dom": "15.2.1",
+    "react-helmet": "^3.1.0",
+    "react-redux": "^4.4.5",
     "react-router": "2.5.2",
+    "react-router-redux": "^4.0.5",
+    "redial": "^0.4.2",
+    "redux": "^3.5.2",
+    "redux-thunk": "^2.1.0",
     "serialize-javascript": "1.3.0",
-    "source-map-support": "0.4.2"
+    "source-map-support": "0.4.2",
+    "webpack-isomorphic-tools": "^2.3.2"
   },
   "devDependencies": {
-    "assets-webpack-plugin": "3.4.0",
     "babel-cli": "6.10.1",
     "babel-core": "6.10.4",
     "babel-eslint": "6.1.2",
     "babel-loader": "6.2.4",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-polyfill": "^6.9.1",
     "babel-preset-es2015-webpack": "6.4.1",
     "babel-preset-react": "6.11.1",
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-react-optimize": "^1.0.1",
-    "chokidar": "1.6.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.9.0",
+    "concurrently": "^2.2.0",
     "css-loader": "0.23.1",
     "dotenv": "2.0.0",
     "eslint": "^3.1.1",
     "eslint-config-boldr": "^1.0.2",
-    "eslint-loader": "1.4.1",
-    "eslint-plugin-import": "1.11.0",
-    "eslint-plugin-react": "5.2.2",
     "extract-text-webpack-plugin": "2.0.0-beta.2",
     "fake-style-loader": "1.0.1",
     "json-loader": "0.5.4",
-    "node-notifier": "4.6.0",
+    "nodemon": "^1.9.2",
     "normalize.css": "4.2.0",
     "path": "0.12.7",
+    "piping": "^1.0.0-rc.3",
     "postcss": "^5.1.0",
     "postcss-import": "^8.1.0",
     "postcss-loader": "^0.9.1",
     "postcss-url": "^5.1.2",
-    "react-hot-loader": "3.0.0-beta.2",
+    "react-hot-loader": "^3.0.0-beta.2",
     "rimraf": "2.5.3",
     "style-loader": "0.13.1",
     "webpack": "2.1.0-beta.19",
-    "webpack-dev-middleware": "1.6.1",
-    "webpack-hot-middleware": "2.12.1",
-    "webpack-node-externals": "1.2.0"
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.1"
   }
 }

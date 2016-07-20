@@ -2,6 +2,7 @@
 /* eslint-disable quote-props */
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const dotenv = require('dotenv');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 
@@ -11,42 +12,26 @@ const isomorphicToolsConfig = require('./isomorphic.config');
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(isomorphicToolsConfig);
 
 const ROOT_DIR = path.join(__dirname, '..', '..');
-
-const WP_HOST = 'localhost';
-const WP_DS = 3001;
-const HMR = `webpack-hot-middleware/client?reload=true&path=http://${WP_HOST}:${WP_DS}/__webpack_hmr`;
-
 const webpackConfig = module.exports = {
   target: 'web',
   node: {
     __dirname: true,
     __filename: true
   },
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'hidden-source-map',
   entry: {
-    main: [
-      'react-hot-loader/patch',
-      HMR,
-      path.join(process.cwd(), 'src', 'client.js')
-    ],
+    main: path.join(process.cwd(), 'src', 'client.js'),
     vendor: [
       'react',
       'react-dom',
-      'react-router',
-      'redux',
-      'react-redux',
-      'react-router-redux',
-      'react-helmet',
-      'redux-thunk',
-      'redial'
+      'react-router'
     ]
   },
   output: {
     path: path.join(process.cwd(), 'build', 'client'),
-    filename: '[name].js',
+    filename: '[name]-[hash].js',
     chunkFilename: '[name]-[chunkhash].js',
-    publicPath: 'http://localhost:3001/build/'
-
+    publicPath: '/assets/'
   },
   resolve: {
     extensions: [
@@ -87,9 +72,20 @@ const webpackConfig = module.exports = {
       minChunks: 2,
       async: true
     }),
-    new webpack.NoErrorsPlugin(),
-    webpackIsomorphicToolsPlugin.development(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        screw_ie8: true,
+        warnings: false
+      }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true }),
+    webpackIsomorphicToolsPlugin
   ],
   module: {
     loaders: [
@@ -98,23 +94,13 @@ const webpackConfig = module.exports = {
         loader: 'babel-loader',
         exclude: [/node_modules/, path.resolve(process.cwd(), './build')],
         query: {
-          babelrc: false,
-          cacheDirectory: true,
+          cacheDirectory: false,
           presets: [
             'react',
             'es2015-webpack',
-            'stage-0'
+            'stage-0',
+            'react-optimize'
           ],
-          plugins: ['transform-decorators-legacy'],
-          env: {
-            development: {
-              presets: ['react-hmre'],
-              plugins: ['react-hot-loader/babel']
-            },
-            production: {
-              presets: ['react-optimize']
-            }
-          },
           compact: 'auto'
         }
       },
@@ -126,26 +112,11 @@ const webpackConfig = module.exports = {
         test: /\.json$/,
         loader: 'json-loader'
       },
-      {
-        test: /\.css$/,
-        loaders: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            query:
-            {
-              sourceMap: true,
-              modules: true,
-              localIdentName: '[local]-[hash:base62:6]',
-              minimize: false
-            }
-          },
-          {
-            loader: 'postcss-loader'
-          }
-        ]
+      { test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+          notExtractLoader: 'style-loader',
+          loader: 'css-loader?modules&sourceMap&minimize=false&localIdentName=[local]-[hash:base62:6]!postcss-loader'
+        })
       }
     ]
   }

@@ -1,0 +1,10 @@
+
+{
+  "watch": [
+    "tools/",
+    "src/server/apis",
+    "src/server/controllers",
+    "src/server.js",
+    "launcher.js"
+  ]
+}
