@@ -20,9 +20,6 @@ const debug = _debug('boldr:server');
 // Create our express server.
 const app = new Express();
 
-// Get an instance of the express Router
-const router = Express.Router(); // eslint-disable-line
-
 app.use((req, res) => {
   if (__DEV__) {
     webpackIsomorphicTools.refresh();

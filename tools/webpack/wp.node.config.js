@@ -30,15 +30,15 @@ const webpackConfig = module.exports = {
   externals: getExternals(),
   devtool: 'source-map',
   entry: {
-      main: [
-        path.join(process.cwd(), 'src', 'server.js')
+      server: [
+        path.join(process.cwd(), 'src', 'server', 'index.js')
       ]
     },
   output: {
-    path: path.join(process.cwd(), 'build', 'server'),
+    path: path.join(process.cwd(), 'dist', 'assets'),
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
-    publicPath: `http://localhost:${process.env.WP_DS}/assets/`,
+    // publicPath: `http://localhost:${process.env.WP_DS}/assets/`,
     libraryTarget: 'commonjs2'
   },
   resolve: {
@@ -55,12 +55,12 @@ const webpackConfig = module.exports = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         PORT: JSON.stringify(process.env.PORT),
         WP_DS: JSON.stringify(process.env.WP_DS),
-        DISABLE_SSR: process.env.DISABLE_SSR,
         WEBSITE_TITLE: JSON.stringify(process.env.WEBSITE_TITLE),
         WEBSITE_DESCRIPTION: JSON.stringify(process.env.WEBSITE_DESCRIPTION)
       },
+      '__DISABLE_SSR__': process.env.DISABLE_SSR,
       '__DEV__': process.env.NODE_ENV === 'development'
-    },
+    }),
     //
     // new AssetsPlugin({
     //   filename: 'assets.json',
@@ -78,14 +78,9 @@ const webpackConfig = module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: [/node_modules/, path.resolve(process.cwd(), './build')],
+        exclude: [/node_modules/, path.resolve(process.cwd(), './dist')],
         query: {
           presets: ['react', 'es2015-webpack', 'stage-0'],
-          env: {
-            development: {
-              plugins: ['react-hot-loader/babel']
-            }
-          },
           compact: 'auto'
         }
       },
