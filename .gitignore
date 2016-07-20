@@ -6,7 +6,7 @@ build/
 public/
 .happypack/
 dist/
-
+static/assets
 # Isomorphic webpack output
 webpack-assets.json
 webpack-stats.json
