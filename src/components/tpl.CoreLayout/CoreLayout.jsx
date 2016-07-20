@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Logo from 'components/atm.Logo';
+import Logo from '../atm.Logo';
 import '../../styles/globals.css';
 
 const CoreLayout = ({ children }) => {
