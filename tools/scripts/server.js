@@ -23,13 +23,6 @@ if (!require('piping')({
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack/isomorphic.config'))
   .development(__DEV__)
-  .server(rootDir, function() {
+  .server(rootDir, () => {
     require('../../src/server');
   });
-
-  // const path = require('path');
-  // const HotServers = require('../webpack/hmr/HotServers');
-  //
-  // const ROOT_DIR = path.join(__dirname, '..', '..');
-  // const servers = new HotServers(ROOT_DIR);
-  // servers.start();
