@@ -1,6 +1,6 @@
 # Boldr React Universal
 
-Setting up your next React project shouldnt be something you fear.
+A **bold** React starter project for your next great universal application.
 
 ## Features
 - Lightweight / easy on dependencies
