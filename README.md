@@ -38,6 +38,24 @@ Your application will start running on port 3000. The server file and source map
 ## Notes
 - There is a [problem with postcss-import](https://github.com/postcss/postcss-import/issues/220) and Webpack. It's important that you do **not** update `postcss-import` past version 8.1.0 until it is resolved.
 
+### SCSS Support
+- Adding Sass/SCSS support is easy to do. It was kept out of this project to reduce the number of dependencies forced on to everyone.
+- First you'll want to `npm install --save-dev node-sass sass-loader`  
+- Next open up `tools/webpack/client.dev.js` and find the **css loader**
+- Put the following above or below:
+```javascript
+ { test: /\.scss$/, loader: 'style!css?sourceMap!postcss!sass?sourceMap' }
+```
+- You will also need to open `tools/webpack/client.prod.js` and add the following to the loaders section
+```javascript
+  { test: /\.scss$/,
+    loader: ExtractTextPlugin.extract({
+      notExtractLoader: 'style-loader',
+      loader: 'css?sourceMap!postcss!sass?sourceMap'
+    })
+  }
+```
+
 ## Resources
 -
 -

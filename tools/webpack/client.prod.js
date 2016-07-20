@@ -1,5 +1,4 @@
 import path from 'path';
-import Debug from 'debug';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -10,15 +9,12 @@ import {
 
 import isomorphicConfig from './isomorphic.config';
 
-const debug = Debug('boldr:webpack:clientProd');
 dotenv.config({ silent: true });
 
 
 const webpackIsomorphicToolsPlugin =
   new WebpackIsomorphicToolsPlugin(isomorphicConfig);
 
-// const { ROOT_DIR, WP_HOST, WP_DS, disableSSR, SERVER_PORT, DIST_DIR } = config;
-// const ASSETS_PATH = path.resolve(ROOT_DIR, './static/assets');
 const clientProdConfig = {
   target: 'web',
   node: {
