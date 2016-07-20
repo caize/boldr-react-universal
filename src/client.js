@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { Router, browserHistory, match } from 'react-router';
+import { Router, browserHistory, match } from 'react-router/es6';
 import { trigger } from 'redial';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 
-import configureStore from './core/redux/configureStore';
+import createStore from './core/redux/createStore';
 import getRoutes from './scenes/index';
 
 const MOUNT_POINT = document.querySelector('#content');
 
-const store = configureStore(browserHistory, window.__data);
+const store = createStore(browserHistory, window.__data);
 const history = syncHistoryWithStore(browserHistory, store);
 const routes = getRoutes(store);
 
@@ -44,10 +44,9 @@ function renderApp() {
     MOUNT_POINT
   );
 }
-if (process.env.NODE_ENV !== 'production') {
-  window.React = React; // enable debugger
-}
+
 if (process.env.NODE_ENV === 'development' && module.hot) {
+  window.React = React; // enable debugger
   module.hot.accept();
   module.hot.accept('./scenes/index', renderApp);
 }

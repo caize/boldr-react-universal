@@ -9,7 +9,7 @@ import RouterContext from 'react-router/lib/RouterContext';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { trigger } from 'redial';
-import configureStore from '../core/redux/configureStore';
+import createStore from '../core/redux/createStore';
 
 import Html from '../components/tpl.Html';
 
@@ -30,7 +30,7 @@ app.use((req, res) => {
   // const client = new ApiClient(req);
   const memoryHistory = createHistory(req.originalUrl);
   const location = memoryHistory.createLocation(req.originalUrl);
-  const store = configureStore(memoryHistory);
+  const store = createStore(memoryHistory);
   const history = syncHistoryWithStore(memoryHistory, store);
 
   function hydrateOnClient() {
