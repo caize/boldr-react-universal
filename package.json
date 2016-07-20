@@ -2,7 +2,7 @@
   "name": "boldr-react-universal",
   "version": "0.9.0",
   "description": "Universal React starter based on Boldr",
-  "main": "build/server/main.js",
+  "main": "dist/server.js",
   "engines": {
     "node": "~6.3.0",
     "npm": "~3.0.0"
