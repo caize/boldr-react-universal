@@ -6,12 +6,14 @@ import { trigger } from 'redial';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 
-import createStore from './core/redux/createStore';
+import ApiClient from './core/api/ApiClient';
+import configureStore from './core/redux/configureStore';
 import getRoutes from './scenes/index';
 
 const MOUNT_POINT = document.querySelector('#content');
 
-const store = createStore(browserHistory, window.__data);
+const client = new ApiClient();
+const store = configureStore(browserHistory, client, window.__data);
 const history = syncHistoryWithStore(browserHistory, store);
 const routes = getRoutes(store);
 
@@ -38,7 +40,7 @@ function renderApp() {
   ReactDOM.render(
     <AppContainer>
     <Provider store={ store } key="provider">
-      <Router routes={ routes } history={ history } />
+      <Router routes={ routes } helpers={ client } history={ history } />
     </Provider>
     </AppContainer>,
     MOUNT_POINT
