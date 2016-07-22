@@ -26,6 +26,7 @@ export const VENDOR_PREFIXES = [
   'last 2 ChromeAndroid versions',
   'Android >= 4.0'
 ];
+
 export const VENDOR = [
   'react',
   'react-dom',
@@ -38,6 +39,7 @@ export const VENDOR = [
   'redial',
   'superagent'
 ];
+
 export const NODE_MODULES_DIR = constants.NODE_MODULES_DIR;
 export const BUILD_DIR = constants.BUILD_DIR;
 export const DIST_DIR = constants.DIST_DIR;

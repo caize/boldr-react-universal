@@ -1,5 +1,4 @@
 import path from 'path';
-import _debug from 'debug';
 import Express from 'express';
 // React Deps
 import React from 'react';
@@ -16,7 +15,6 @@ import configureStore from '../core/redux/configureStore';
 import Html from '../components/tpl.Html';
 import getRoutes from '../scenes/index';
 
-const debug = _debug('boldr:server');
 // Create our express server.
 const app = Express();
 const publicPath = path.resolve('public');
@@ -80,7 +78,7 @@ app.use((req, res) => {
             <Html assets={ webpackIsomorphicTools.assets() } component={ component } store={ store } />
           ));
       }).catch((mountError) => {
-        debug(mountError.stack);
+        console.log(mountError.stack);
         return res.status(500);
       });
     } else {

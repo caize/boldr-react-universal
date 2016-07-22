@@ -17,10 +17,8 @@ const webpackIsomorphicToolsPlugin =
 
 const clientProdConfig = {
   target: 'web',
-  node: {
-    __dirname: true,
-    __filename: true
-  },
+  stats: false, // Don't show stats in the console
+  progress: true,
   devtool: 'hidden-source-map',
   context: ROOT_DIR,
   entry: {
@@ -94,7 +92,7 @@ const clientProdConfig = {
         discardComments: {
           removeAll: true
         },
-        discardUnused: false,
+        discardUnused: true,
         mergeIdents: false,
         reduceIdents: false,
         safe: true,
@@ -107,6 +105,7 @@ const clientProdConfig = {
       minimize: true,
       debug: false
     }),
+    new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
@@ -138,8 +137,11 @@ const clientProdConfig = {
     // merge common
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true }),
     webpackIsomorphicToolsPlugin
-  ]
+  ],
+  node: {
+    __dirname: true,
+    __filename: true
+  }
 };
 module.exports = clientProdConfig;

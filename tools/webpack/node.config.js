@@ -22,6 +22,8 @@ function getExternals() {
 
 const nodeConfig = { // eslint-disable-line
   target: 'node',
+  stats: false, // Don't show stats in the console
+  progress: true,
   externals: getExternals(),
   context: ROOT_DIR,
   devtool: 'source-map',

@@ -1,7 +1,6 @@
 /* eslint-disable no-console */ /* eslint-disable no-unneeded-ternary */
 /* eslint-disable quote-props */
 import path from 'path';
-import Debug from 'debug';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
 import WebpackIsomorphicToolsPlugin from 'webpack-isomorphic-tools/plugin';
@@ -10,7 +9,6 @@ import { ROOT_DIR, SRC_DIR, WP_DS, NODE_MODULES_DIR, VENDOR_PREFIXES, VENDOR, BU
 
 import isomorphicConfig from './isomorphic.config';
 
-const debug = Debug('boldr:webpack:client');
 dotenv.config({ silent: true });
 
 
@@ -29,13 +27,10 @@ const BABELQUERY = {
 };
 
 const HMR = `webpack-hot-middleware/client?reload=true&path=http://localhost:${WP_DS}/__webpack_hmr`;
-debug('Webpack is reading the client configuration.');
 const clientDevConfig = {
   target: 'web',
-  node: {
-    __dirname: true,
-    __filename: true
-  },
+  stats: false, // Don't show stats in the console
+  progress: true,
   // use either cheap-eval-source-map or cheap-module-eval-source-map.
   // cheap eval is faster than cheap-module
   // see https://webpack.github.io/docs/build-performance.html#sourcemaps
@@ -131,10 +126,15 @@ const clientDevConfig = {
       minChunks: 2,
       async: true
     }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    webpackIsomorphicToolsPlugin.development(),
-    new webpack.HotModuleReplacementPlugin()
-  ]
+    webpackIsomorphicToolsPlugin.development()
+  ],
+  node: {
+    __dirname: true,
+    __filename: true
+  }
 };
 
 module.exports = clientDevConfig;
