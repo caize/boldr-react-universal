@@ -5,7 +5,7 @@ import { Router, browserHistory, match } from 'react-router/es6';
 import { trigger } from 'redial';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
-
+import WebFontLoader from 'webfontloader';
 import ApiClient from './core/api/ApiClient';
 import configureStore from './core/redux/configureStore';
 import getRoutes from './scenes/index';
@@ -16,6 +16,12 @@ const client = new ApiClient();
 const store = configureStore(browserHistory, client, window.__data);
 const history = syncHistoryWithStore(browserHistory, store);
 const routes = getRoutes(store);
+
+WebFontLoader.load({
+  google: {
+    families: ['Arimo:400,600', 'Raleway:400,300, 600']
+  }
+});
 
 history.listen(location => {
   match({ routes, location }, (error, redirectLocation, renderProps) => {

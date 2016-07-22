@@ -79,7 +79,27 @@ const clientProdConfig = {
     return [
       require('postcss-import')(),
       require('postcss-url')(),
-      require('autoprefixer')({ browsers: VENDOR_PREFIXES })
+      require('postcss-custom-media')(),
+      require('postcss-media-minmax')(),
+      require('postcss-simple-vars')(),
+      require('postcss-nested')(),
+      require('pixrem')(),
+      require('lost')(),
+      require('cssnano')({
+        autoprefixer: {
+          add: true,
+          remove: true,
+          browsers: VENDOR_PREFIXES
+        },
+        discardComments: {
+          removeAll: true
+        },
+        discardUnused: false,
+        mergeIdents: false,
+        reduceIdents: false,
+        safe: true,
+        sourcemap: true
+      })
     ];
   },
   plugins: [

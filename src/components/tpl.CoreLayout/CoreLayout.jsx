@@ -3,7 +3,7 @@ import '../../styles/globals.css';
 
 const CoreLayout = ({ children }) => {
   return (
-    <div className="container-fluid">
+    <div>
         { children }
     </div>
   );
