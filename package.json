@@ -81,7 +81,7 @@
     "source-map-support": "0.4.2",
     "superagent": "^2.1.0",
     "webfontloader": "^1.6.26",
-    "webpack-isomorphic-tools": "^2.3.2"
+    "webpack-isomorphic-tools": "^2.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",
