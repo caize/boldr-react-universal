@@ -114,7 +114,7 @@
     "normalize.css": "4.2.0",
     "path": "0.12.7",
     "pixrem": "^3.0.1",
-    "postcss": "^5.1.0",
+    "postcss": "^5.1.1",
     "postcss-custom-media": "^5.0.1",
     "postcss-import": "8.1.0",
     "postcss-loader": "^0.9.1",
