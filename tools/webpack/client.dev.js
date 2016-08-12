@@ -1,31 +1,33 @@
 /* eslint-disable no-console */ /* eslint-disable no-unneeded-ternary */
 /* eslint-disable quote-props */
-import path from 'path';
-import webpack from 'webpack';
-import dotenv from 'dotenv';
-import WebpackIsomorphicToolsPlugin from 'webpack-isomorphic-tools/plugin';
+const path = require('path');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
+const appRoot = require('app-root-path');
+const WebpackNotifierPlugin = require('webpack-notifier');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const isomorphicConfig = require('./isomorphic.config');
 
-import { ROOT_DIR, SRC_DIR, WP_DS, NODE_MODULES_DIR, VENDOR_PREFIXES, VENDOR, BUILD_DIR } from '../constants';
-
-import isomorphicConfig from './isomorphic.config';
-
-dotenv.config({ silent: true });
-
+const appRootPath = appRoot.toString();
+const NODE_MODULES_DIR = path.resolve(appRootPath, './node_modules');
 
 const webpackIsomorphicToolsPlugin =
   new WebpackIsomorphicToolsPlugin(isomorphicConfig);
+const WP_DS = 3001;
+const VENDOR = [
+  'react',
+  'react-dom',
+  'react-router',
+  'redux',
+  'react-redux',
+  'react-router-redux',
+  'react-helmet',
+  'redux-thunk',
+  'redial',
+  'superagent'
+];
 
-const BABELQUERY = {
-  babelrc: false,
-  cacheDirectory: true,
-  // Do not include superfluous whitespace characters and line terminators.
-  // When set to "auto" compact is set to true on input sizes of >100KB.
-  compact: 'auto',
-  presets: ['react-hmre', 'react', 'es2015-webpack', 'stage-0'],
-  plugins: [['transform-runtime', { polyfill: true, regenerator: false }],
-            'react-hot-loader/babel', 'transform-decorators-legacy']
-};
-
+dotenv.config({ silent: true });
 const HMR = `webpack-hot-middleware/client?reload=true&path=http://localhost:${WP_DS}/__webpack_hmr`;
 const clientDevConfig = {
   target: 'web',
@@ -35,17 +37,17 @@ const clientDevConfig = {
   // cheap eval is faster than cheap-module
   // see https://webpack.github.io/docs/build-performance.html#sourcemaps
   devtool: 'cheap-module-eval-source-map',
-  context: ROOT_DIR,
+  context: appRootPath,
   entry: {
     main: [
       'react-hot-loader/patch',
       HMR,
-      path.join(SRC_DIR, 'client.js')
+      path.join(appRootPath, 'src', 'client.js')
     ],
     vendor: VENDOR
   },
   output: {
-    path: BUILD_DIR,
+    path: path.join(appRootPath, 'public'),
     filename: '[name].js',
     chunkFilename: '[name]-chunk.js',
     publicPath: `http://localhost:${WP_DS}/build/`
@@ -53,13 +55,13 @@ const clientDevConfig = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    root: ROOT_DIR,
+    root: appRootPath,
     modulesDirectories: ['src', 'node_modules'],
     alias: {
       react$: require.resolve(path.join(NODE_MODULES_DIR, 'react')),
-      components: path.join(SRC_DIR, 'components'),
-      scenes: path.join(SRC_DIR, 'scenes'),
-      core: path.join(SRC_DIR, 'core')
+      components: path.join(appRootPath, 'src', 'components'),
+      scenes: path.join(appRootPath, 'src', 'scenes'),
+      core: path.join(appRootPath, 'src', 'core')
     }
   },
   module: {
@@ -67,8 +69,7 @@ const clientDevConfig = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: NODE_MODULES_DIR,
-        query: BABELQUERY
+        exclude: NODE_MODULES_DIR
       },
       { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
@@ -84,19 +85,14 @@ const clientDevConfig = {
   },
   postcss(webpack) {
     return [
-      require('postcss-import')(),
-      require('postcss-url')(),
-      require('postcss-custom-media')(),
-      require('postcss-media-minmax')(),
-      require('postcss-simple-vars')(),
-      require('postcss-nested')(),
+      require('precss')(),
       require('pixrem')(),
       require('lost')(),
       require('cssnano')({
         autoprefixer: {
           add: true,
           remove: true,
-          browsers: VENDOR_PREFIXES
+          browsers: 'last 2 versions'
         },
         discardComments: {
           removeAll: true
@@ -126,6 +122,7 @@ const clientDevConfig = {
       minChunks: 2,
       async: true
     }),
+    new WebpackNotifierPlugin({ title: '🔥 Webpack' }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 require('babel-register');
 require('babel-polyfill');
+
 const path = require('path');
 
 const rootDir = path.resolve(__dirname, '..', '..');

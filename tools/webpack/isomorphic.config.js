@@ -1,6 +1,11 @@
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 
 module.exports = {
+  debug: false,
+  patch_require: true,
+  webpack_assets_file_path: 'webpack-assets.json',
+  webpack_stats_file_path: 'webpack-stats.json',
+  port: 8888,
   assets: {
     images: {
       extensions: [
@@ -52,6 +57,16 @@ module.exports = {
         if (options.development) {
           return WebpackIsomorphicToolsPlugin.css_modules_loader_parser(module, options, log);
         }
+        log.info('# module name', module.name);
+        log.info('# module source', module.source);
+        log.info('# project path', options.project_path);
+        log.info('# assets base url', options.assets_base_url);
+        log.info('# regular expressions', options.regular_expressions);
+        log.info('# debug mode', options.debug);
+        log.info('# development mode', options.development);
+        log.debug('debugging');
+        log.warning('warning');
+        log.error('error');
 
         // in production mode there's Extract Text Loader which extracts CSS text away
         return module.source;

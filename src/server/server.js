@@ -9,7 +9,6 @@ import RouterContext from 'react-router/lib/RouterContext';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { trigger } from 'redial';
-
 import ApiClient from '../core/api/ApiClient';
 import configureStore from '../core/redux/configureStore';
 import Html from '../components/tpl.Html';

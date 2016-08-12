@@ -10,7 +10,7 @@ import ApiClient from './core/api/ApiClient';
 import configureStore from './core/redux/configureStore';
 import getRoutes from './scenes/index';
 
-const MOUNT_POINT = document.querySelector('#content');
+const MOUNT_POINT = document.getElementById('content');
 
 const client = new ApiClient();
 const store = configureStore(browserHistory, client, window.__data);

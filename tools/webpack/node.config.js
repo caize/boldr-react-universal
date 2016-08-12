@@ -1,39 +1,30 @@
 /* eslint-disable no-console */
-import fs from 'fs';
-import path from 'path';
-import webpack from 'webpack';
-import {
-  ROOT_DIR, SRC_DIR, NODE_MODULES_DIR
-} from '../constants';
-
+const path = require('path');
+const webpack = require('webpack');
 const dotenv = require('dotenv');
+const appRoot = require('app-root-path');
+const NodeExternals = require('webpack-node-externals');
 
+const appRootPath = appRoot.toString();
+const NODE_MODULES_DIR = path.resolve(appRootPath, './node_modules');
 dotenv.config({
   silent: true
 });
-
-function getExternals() {
-  const nodeModules = fs.readdirSync(path.join(process.cwd(), 'node_modules')) // eslint-disable-line
-  return nodeModules.reduce(function(ext, mod) { // eslint-disable-line
-    ext[mod] = 'commonjs ' + mod // eslint-disable-line
-    return ext // eslint-disable-line
-  }, {}) // eslint-disable-line
-}
 
 const nodeConfig = { // eslint-disable-line
   target: 'node',
   stats: false, // Don't show stats in the console
   progress: true,
-  externals: getExternals(),
-  context: ROOT_DIR,
+  externals: NodeExternals(),
+  context: appRootPath,
   devtool: 'source-map',
   entry: {
     server: [
-      path.join(SRC_DIR, 'server', 'index.js')
+      path.join(appRootPath, 'src', 'server', 'index.js')
     ]
   },
   output: {
-    path: ROOT_DIR,
+    path: appRootPath,
     publicPath: '/',
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
@@ -48,14 +39,7 @@ const nodeConfig = { // eslint-disable-line
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: [NODE_MODULES_DIR],
-        query: {
-          cacheDirectory: false,
-          babelrc: false,
-          presets: ['react', 'es2015-webpack', 'stage-0'],
-          plugins: [['transform-runtime', { polyfill: true, regenerator: false }]],
-          compact: 'auto'
-        }
+        exclude: NODE_MODULES_DIR
       },
       { test: /\.json$/, loader: 'json-loader' },
       {

@@ -1,28 +1,41 @@
-import path from 'path';
-import webpack from 'webpack';
-import dotenv from 'dotenv';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import WebpackIsomorphicToolsPlugin from 'webpack-isomorphic-tools/plugin';
-import {
-  ROOT_DIR, SRC_DIR, NODE_MODULES_DIR, VENDOR_PREFIXES, VENDOR, ASSETS_DIR
-} from '../constants';
+const path = require('path');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
+const appRoot = require('app-root-path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const isomorphicConfig = require('./isomorphic.config');
 
-import isomorphicConfig from './isomorphic.config';
-
-dotenv.config({ silent: true });
-
+const appRootPath = appRoot.toString();
+const NODE_MODULES_DIR = path.resolve(appRootPath, './node_modules');
 
 const webpackIsomorphicToolsPlugin =
   new WebpackIsomorphicToolsPlugin(isomorphicConfig);
+
+const VENDOR = [
+  'react',
+  'react-dom',
+  'react-router',
+  'redux',
+  'react-redux',
+  'react-router-redux',
+  'react-helmet',
+  'redux-thunk',
+  'redial',
+  'superagent'
+];
+
+dotenv.config({ silent: true });
+const ASSETS_DIR = path.join(appRootPath, 'public', 'assets');
 
 const clientProdConfig = {
   target: 'web',
   stats: false, // Don't show stats in the console
   progress: true,
   devtool: 'hidden-source-map',
-  context: ROOT_DIR,
+  context: appRootPath,
   entry: {
-    main: path.join(SRC_DIR, 'client.js'),
+    main: path.join(appRootPath, 'src', 'client.js'),
     vendor: VENDOR
   },
   output: {
@@ -36,20 +49,7 @@ const clientProdConfig = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: [NODE_MODULES_DIR],
-        query: {
-          cacheDirectory: false,
-          compact: 'auto',
-          babelrc: false,
-          presets: [
-            'es2015-webpack',
-            'react',
-            'stage-0',
-            'react-optimize'
-          ],
-          plugins: [['transform-runtime', { polyfill: true, regenerator: false }],
-            'transform-decorators-legacy']
-        }
+        exclude: NODE_MODULES_DIR
       },
       { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
@@ -67,7 +67,7 @@ const clientProdConfig = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    root: ROOT_DIR,
+    root: appRootPath,
     modulesDirectories: ['src', 'node_modules'],
     alias: {
       react$: require.resolve(path.join(NODE_MODULES_DIR, 'react'))
@@ -87,7 +87,7 @@ const clientProdConfig = {
         autoprefixer: {
           add: true,
           remove: true,
-          browsers: VENDOR_PREFIXES
+          browsers: 'last 2 versions'
         },
         discardComments: {
           removeAll: true

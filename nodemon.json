@@ -15,5 +15,6 @@
     "watch": [
       "src/server/**/*.js",
       "tools/**/*.js"
-    ]
+    ],
+    "exec": "babel-node tools/scripts/server.js"
 }
