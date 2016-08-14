@@ -118,7 +118,7 @@
     "normalize.css": "4.2.0",
     "path": "0.12.7",
     "pixrem": "^3.0.1",
-    "postcss": "^5.1.1",
+    "postcss": "^5.1.2",
     "precss": "^1.4.0",
     "react-hot-loader": "^3.0.0-beta.2",
     "rimraf": "2.5.4",
