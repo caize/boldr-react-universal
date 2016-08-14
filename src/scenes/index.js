@@ -1,6 +1,12 @@
-export default (store) => {
-  if (typeof require.ensure !== 'function') require.ensure = (deps, cb) => cb(require);
+const errorLoading = (err) => {
+  console.error('⚠️  Dynamic page loading failed', err); // eslint-disable-line no-console
+};
 
+const loadModule = (cb) => (componentModule) => {
+  cb(null, componentModule.default);
+};
+
+export default (store) => {
   return {
     path: '/',
     component: require('../components/tpl.CoreLayout').default,
@@ -10,12 +16,9 @@ export default (store) => {
     childRoutes: [{
       path: 'about',
       getComponent(nextState, cb) {
-        console.time('gettingComponent');
-        require.ensure([], (require) => {
-          cb(null, require('./About').default);
-
-          console.timeEnd('gettingComponent');
-        });
+        System.import('./About')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       }
     }]
   };

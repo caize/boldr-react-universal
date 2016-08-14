@@ -10,8 +10,8 @@ static/assets
 # Isomorphic webpack output
 webpack-assets.json
 webpack-stats.json
-server.js
-server.js.map
+./server.js
+./server.js.map
 # Logs
 logs
 *.log

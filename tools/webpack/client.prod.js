@@ -4,7 +4,9 @@ const dotenv = require('dotenv');
 const appRoot = require('app-root-path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const polyfill = require('../scripts/polyfill');
 const isomorphicConfig = require('./isomorphic.config');
+
 
 const appRootPath = appRoot.toString();
 const NODE_MODULES_DIR = path.resolve(appRootPath, './node_modules');
@@ -30,12 +32,13 @@ const ASSETS_DIR = path.join(appRootPath, 'public', 'assets');
 
 const clientProdConfig = {
   target: 'web',
+  bail: true,
   stats: false, // Don't show stats in the console
   progress: true,
   devtool: 'hidden-source-map',
   context: appRootPath,
   entry: {
-    main: path.join(appRootPath, 'src', 'client.js'),
+    main: [require.resolve('../scripts/polyfill'), path.join(appRootPath, 'src', 'client.js')],
     vendor: VENDOR
   },
   output: {
@@ -60,7 +63,7 @@ const clientProdConfig = {
       { test: /\.css$/,
         loader: ExtractTextPlugin.extract({
           notExtractLoader: 'style-loader',
-          loader: 'css-loader?modules&sourceMap&minimize=false&localIdentName=[local]-[hash:base62:6]!postcss-loader'
+          loader: 'css-loader?-autoprefixer&modules&sourceMap&minimize=false&localIdentName=[local]-[hash:base62:6]!postcss-loader'
         })
       }
     ]
@@ -75,12 +78,7 @@ const clientProdConfig = {
   },
   postcss(webpack) {
     return [
-      require('postcss-import')(),
-      require('postcss-url')(),
-      require('postcss-custom-media')(),
-      require('postcss-media-minmax')(),
-      require('postcss-simple-vars')(),
-      require('postcss-nested')(),
+      require('precss')(),
       require('pixrem')(),
       require('lost')(),
       require('cssnano')({
@@ -132,6 +130,13 @@ const clientProdConfig = {
       compress: {
         screw_ie8: true,
         warnings: false
+      },
+      mangle: {
+        screw_ie8: true
+      },
+      output: {
+        comments: false,
+        screw_ie8: true
       }
     }),
     // merge common

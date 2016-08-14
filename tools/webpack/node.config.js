@@ -15,7 +15,12 @@ const nodeConfig = { // eslint-disable-line
   target: 'node',
   stats: false, // Don't show stats in the console
   progress: true,
-  externals: NodeExternals(),
+  externals: NodeExternals({ whitelist: [
+    /\.(eot|woff|woff2|ttf|otf)$/,
+    /\.(svg|png|jpg|jpeg|gif|ico)$/,
+    /\.(mp4|mp3|ogg|swf|webp)$/,
+    /\.(css|scss|sass|sss|less)$/
+  ] }),
   context: appRootPath,
   devtool: 'source-map',
   entry: {

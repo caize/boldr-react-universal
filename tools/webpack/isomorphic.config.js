@@ -64,9 +64,6 @@ module.exports = {
         log.info('# regular expressions', options.regular_expressions);
         log.info('# debug mode', options.debug);
         log.info('# development mode', options.development);
-        log.debug('debugging');
-        log.warning('warning');
-        log.error('error');
 
         // in production mode there's Extract Text Loader which extracts CSS text away
         return module.source;

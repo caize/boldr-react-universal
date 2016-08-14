@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const dotenv = require('dotenv');
 const appRoot = require('app-root-path');
 const WebpackNotifierPlugin = require('webpack-notifier');
+const HappyPack = require('happypack');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const isomorphicConfig = require('./isomorphic.config');
 
@@ -67,6 +68,7 @@ const clientDevConfig = {
   module: {
     loaders: [
       {
+        happy: { id: 'js' },
         test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: NODE_MODULES_DIR
@@ -79,7 +81,7 @@ const clientDevConfig = {
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
-        loader: 'style!css?modules&camelCase&sourceMap&localIdentName=[name]---[local]---[hash:base64:5]!postcss'
+        loader: 'style!css?-autoprefixer&modules&camelCase&sourceMap&localIdentName=[name]---[local]---[hash:base64:5]!postcss'
       }
     ]
   },
@@ -121,6 +123,10 @@ const clientDevConfig = {
       children: true,
       minChunks: 2,
       async: true
+    }),
+    new HappyPack({
+      id: 'js',
+      threads: 4
     }),
     new WebpackNotifierPlugin({ title: '🔥 Webpack' }),
     new webpack.optimize.OccurrenceOrderPlugin(),
