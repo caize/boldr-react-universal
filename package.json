@@ -5,7 +5,7 @@
   "author": "Steven Truesdell <steven@strues.io>",
   "betterScripts": {
     "build": {
-      "command": "better-npm-run build:server && better-npm-run build:client",
+      "command": "better-npm-run build:server && better-npm-run build:client && better-npm-run build:entry",
       "env": {
         "NODE_ENV": "production"
       }
@@ -17,6 +17,9 @@
         "NODE_ENV": "production"
       }
     },
+    "build:entry": {
+      "command": "./tools/scripts/createEntry.sh"
+    },
     "build:client": {
       "command": "npm run clean:client && babel-node -- ./node_modules/.bin/webpack --env production --json --config tools/webpack/client.prod.js",
       "env": {
@@ -25,7 +28,7 @@
       }
     },
     "dev": {
-      "command": "concurrently --kill-others \"better-npm-run watch:client\"  \"better-npm-run watch:server\"",
+      "command": "npm-run-all --parallel watch:client watch:server",
       "env": {
         "NODE_ENV": "development",
         "NODE_PATH": "./src",
@@ -103,20 +106,19 @@
     "babel-preset-react-optimize": "^1.0.1",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.11.6",
-    "concurrently": "^2.2.0",
     "css-loader": "0.23.1",
     "cssnano": "^3.7.3",
     "dotenv": "2.0.0",
     "eslint": "^3.3.0",
     "eslint-config-boldr": "^1.0.2",
     "extract-text-webpack-plugin": "^2.0.0-beta.3",
-    "fake-style-loader": "1.0.1",
     "file-loader": "^0.9.0",
     "happypack": "^2.2.1",
     "json-loader": "0.5.4",
     "lost": "^7.0.4",
     "nodemon": "^1.10.0",
     "normalize.css": "4.2.0",
+    "npm-run-all": "^2.3.0",
     "path": "0.12.7",
     "pixrem": "^3.0.1",
     "postcss": "^5.1.2",
@@ -148,7 +150,7 @@
     "webpack"
   ],
   "license": "MIT",
-  "main": "dist/server.js",
+  "main": "build/server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/strues/boldr-react-universal.git"
@@ -157,9 +159,10 @@
     "build": "better-npm-run build",
     "build:client": "better-npm-run build:client",
     "build:server": "better-npm-run build:server",
+    "build:entry": "better-npm-run build:entry",
     "clean": "npm run clean:server && npm run clean:client",
-    "clean:client": "rimraf public/assets",
-    "clean:server": "rimraf server.js && rimraf server.js.map",
+    "clean:client": "rimraf build/public/assets && rimraf build/webpack-assets.json",
+    "clean:server": "rimraf build/server.js && rimraf build/server.js.map && rimraf build/index.js",
     "dev": "better-npm-run dev",
     "postinstall": "better-npm-run build",
     "start": "better-npm-run start",

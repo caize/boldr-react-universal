@@ -29,7 +29,7 @@ const nodeConfig = { // eslint-disable-line
     ]
   },
   output: {
-    path: appRootPath,
+    path: path.join(appRootPath, 'build'),
     publicPath: '/',
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
@@ -49,9 +49,18 @@ const nodeConfig = { // eslint-disable-line
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
-        loader: 'fake-style!style!css?modules&camelCase&sourceMap&localIdentName=[name]---[local]---[hash:base64:5]!postcss' // eslint-disable-line
+        loaders: [
+          'css-loader/locals',
+          'postcss'
+        ]
       },
-      { test: /\.scss$/, loader: 'fake-style!css!postcss!sass' }
+      { test: /\.scss$/,
+        loaders: [
+          'css-loader/locals',
+          'postcss',
+          'sass'
+        ]
+      }
     ]
   },
   plugins: [

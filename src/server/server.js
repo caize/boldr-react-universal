@@ -16,7 +16,7 @@ import getRoutes from '../scenes/index';
 
 // Create our express server.
 const app = Express();
-const publicPath = path.resolve('public');
+const publicPath = path.resolve('build/public');
 
 app.use(Express.static(publicPath));
 
