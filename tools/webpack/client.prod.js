@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const appRoot = require('app-root-path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-const polyfill = require('../scripts/polyfill');
 const isomorphicConfig = require('./isomorphic.config');
 
 
@@ -28,7 +27,7 @@ const VENDOR = [
 ];
 
 dotenv.config({ silent: true });
-const ASSETS_DIR = path.join(appRootPath, 'public', 'assets');
+const ASSETS_DIR = path.join(appRootPath, 'build', 'public', 'assets');
 
 const clientProdConfig = {
   target: 'web',
@@ -65,11 +64,17 @@ const clientProdConfig = {
           notExtractLoader: 'style-loader',
           loader: 'css-loader?-autoprefixer&modules&sourceMap&minimize=false&localIdentName=[local]-[hash:base62:6]!postcss-loader'
         })
+      },
+      { test: /\.scss$/,
+        loader: ExtractTextPlugin.extract({
+          notExtractLoader: 'style-loader',
+          loader: 'css-loader?-autoprefixer&modules&sourceMap&minimize=false&localIdentName=[local]-[hash:base62:6]!postcss-loader!sass-loader'
+        })
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['', '.js', '.jsx', '.json', '.css', '.scss'],
     root: appRootPath,
     modulesDirectories: ['src', 'node_modules'],
     alias: {
@@ -140,7 +145,6 @@ const clientProdConfig = {
       }
     }),
     // merge common
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     webpackIsomorphicToolsPlugin
   ],

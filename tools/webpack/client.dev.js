@@ -55,7 +55,7 @@ const clientDevConfig = {
 
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['', '.js', '.jsx', '.json', '.css', '.scss'],
     root: appRootPath,
     modulesDirectories: ['src', 'node_modules'],
     alias: {
@@ -82,6 +82,10 @@ const clientDevConfig = {
       {
         test: /\.css$/,
         loader: 'style!css?-autoprefixer&modules&camelCase&sourceMap&localIdentName=[name]---[local]---[hash:base64:5]!postcss'
+      },
+      {
+        test: /\.scss$/,
+        loader: 'style!css?-autoprefixermodules&camelCase&sourceMap&localIdentName=[name]---[local]---[hash:base64:5]!postcss!sass-loader'
       }
     ]
   },
