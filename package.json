@@ -109,7 +109,7 @@
     "css-loader": "0.23.1",
     "cssnano": "^3.7.3",
     "dotenv": "2.0.0",
-    "eslint": "^3.3.0",
+    "eslint": "^3.3.1",
     "eslint-config-boldr": "^1.1.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "file-loader": "^0.9.0",
