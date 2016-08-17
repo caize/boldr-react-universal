@@ -119,7 +119,7 @@
     "node-sass": "^3.8.0",
     "nodemon": "^1.10.0",
     "normalize.css": "4.2.0",
-    "npm-run-all": "^2.3.0",
+    "npm-run-all": "^3.0.0",
     "path": "0.12.7",
     "pixrem": "^3.0.1",
     "postcss": "^5.1.2",
